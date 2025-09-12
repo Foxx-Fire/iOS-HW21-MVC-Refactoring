@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0BB52D652E7472D900E14006 /* Exceptions for "iOS-HW21-MVC-Refactoring" folder in "iOS-HW21-MVC-Refactoring" target */ = {
+		0BB52DAA2E747D4000E14006 /* Exceptions for "iOS-HW21-MVC-Refactoring" folder in "iOS-HW21-MVC-Refactoring" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
@@ -24,7 +24,7 @@
 		0BB52D552E7472D500E14006 /* iOS-HW21-MVC-Refactoring */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0BB52D652E7472D900E14006 /* Exceptions for "iOS-HW21-MVC-Refactoring" folder in "iOS-HW21-MVC-Refactoring" target */,
+				0BB52DAA2E747D4000E14006 /* Exceptions for "iOS-HW21-MVC-Refactoring" folder in "iOS-HW21-MVC-Refactoring" target */,
 			);
 			path = "iOS-HW21-MVC-Refactoring";
 			sourceTree = "<group>";
