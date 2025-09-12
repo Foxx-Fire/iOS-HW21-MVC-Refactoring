@@ -10,6 +10,16 @@
 		0BB52D532E7472D500E14006 /* iOS-HW21-MVC-Refactoring.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS-HW21-MVC-Refactoring.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0BB52D652E7472D900E14006 /* Exceptions for "iOS-HW21-MVC-Refactoring" folder in "iOS-HW21-MVC-Refactoring" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = 0BB52D522E7472D500E14006 /* iOS-HW21-MVC-Refactoring */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0BB52D552E7472D500E14006 /* iOS-HW21-MVC-Refactoring */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
