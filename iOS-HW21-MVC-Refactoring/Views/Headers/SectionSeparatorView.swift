@@ -13,7 +13,7 @@ final class SectionSeparatorView: UICollectionReusableView {
     
     private let separatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGray6
+        view.backgroundColor = .systemGray4
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

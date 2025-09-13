@@ -4,59 +4,7 @@
 //
 //  Created by FoxxFire on 12.09.2025.
 //
-
-extension AlbumSection {
-    static var allSections: [AlbumSection] = [
-        // My Albums
-        AlbumSection(
-            header: SectionHeader(
-                title: "My Albums",
-                buttonTitle: "See All",
-                buttonAction: {
-                    print("See All tapped for My Albums")
-                }
-            ),
-            type: .myAlbums,
-            items: MyAlbum.myAlbums.map {AlbumItem.myAlbum($0)}
-        ),
-        
-        // Shared Albums
-        AlbumSection(
-            header: SectionHeader(
-                title: "Shared Albums",
-                buttonTitle: "See All",
-                buttonAction: {
-                    print("See All tapped for Shared Albums")
-                }
-            ),
-            type: .sharedAlbums,
-            items: [
-                // [перваяЯчейка] + [остальныеЯчейки]
-                // ✅ ПЕРВАЯ ячейка с кружочками
-                AlbumItem.firstSharedAlbum(FirstSharedAlbum.firstSharedAlbum),
-                // ✅ Остальные обычные ячейки
-            ] + SharedAlbum.sharedAlbums.map { AlbumItem.sharedAlbum($0) }
-        ),
-        
-        // Media Types
-        AlbumSection(
-            header: SectionHeader(title: "Media Types"),
-            type: .mediaTypes,
-            items: MediaAndOther.mediaTypes.map {
-                AlbumItem.mediaType($0
-                )}
-        ),
-        
-        // Other
-        AlbumSection(
-            header: SectionHeader(title: "Other"),
-            type: .other,
-            items: MediaAndOther.otherType.map {
-                AlbumItem.other($0
-                )}
-        )
-    ]
-}
+import Foundation
 
 extension MyAlbum {
     static var myAlbums: [MyAlbum] = [

@@ -9,7 +9,7 @@ import UIKit
 
 final class OtherAlbumsCell: UICollectionViewCell {
     
-    static let identifier = "OtherAlbums"
+    static let identifier = "OtherAlbumsCell"
     
     // MARK: - UI Elements
     
