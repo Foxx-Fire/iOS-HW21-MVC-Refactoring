@@ -11,12 +11,21 @@ final class AlbumsViewController: BaseViewController{
     
     // MARK: - Properties
     
-    private let layout = AlbumCompositionalLayout()
+    private let layout: AlbumCompositionalLayout
     private let dataManager: AlbumsDataProtocol
+    
+    private lazy var albumsView: AlbumsView = {
+        let compositionalLayout = layout.createLayout { [weak self] sectionIndex in
+            return self?.getLayoutType(for: sectionIndex)
+        }
+        return AlbumsView(layout: compositionalLayout)
+    }()
     
     //MARK: - Init
     init(dataManager: AlbumsDataProtocol = AlbumsDataManager()) {
         self.dataManager = dataManager
+        self.layout = AlbumCompositionalLayout()
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -24,54 +33,45 @@ final class AlbumsViewController: BaseViewController{
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Outlets
-    
-    private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout:  layout.createLayout())
-        collectionView.backgroundColor = .white
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        return collectionView
-    }()
-    
     // MARK: - Lifecycle
+    
+    override func loadView() {
+        view = albumsView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupView()
         setupNavigation()
-        setupHierarchy()
-        setupLayout()
+        setupDelegates()
         registerCollectionViewCells()
     }
     
     // MARK: - Registration
     
     private func registerCollectionViewCells() {
-        collectionView.register(
+        albumsView.collectionView.register(
             MyAlbumsCell.self,
             forCellWithReuseIdentifier: MyAlbumsCell.identifier
         )
-        collectionView.register(
+        albumsView.collectionView.register(
             AlbumsHeaderView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: AlbumsHeaderView.identifier
         )
-        collectionView.register(
+        albumsView.collectionView.register(
             SharedAlbumsFirstCell.self,
             forCellWithReuseIdentifier: SharedAlbumsFirstCell.identifier
         )
-        collectionView.register(
+        albumsView.collectionView.register(
             SharedAlbumsCell.self,
             forCellWithReuseIdentifier: SharedAlbumsCell.identifier
         )
-        collectionView.register(
+        albumsView.collectionView.register(
             MediaTypesCell.self,
             forCellWithReuseIdentifier: MediaTypesCell.identifier
         )
-        collectionView.register(
+        albumsView.collectionView.register(
             OtherAlbumsCell.self,
             forCellWithReuseIdentifier: OtherAlbumsCell.identifier
         )
@@ -79,10 +79,10 @@ final class AlbumsViewController: BaseViewController{
     
     // MARK: - Setup
     
-    private func setupView() {
-        view.backgroundColor = Constants.backgroundColor
+    private func setupDelegates() {
+        albumsView.collectionView.dataSource = self
+        albumsView.collectionView.delegate = self
     }
-    
     func setupNavigation() {
         let addAction = UIAction { _ in
             print("Add button tapped in Albums")
@@ -96,21 +96,25 @@ final class AlbumsViewController: BaseViewController{
         )
     }
     
-    private func setupHierarchy() {
-        view.addSubview(collectionView)
-    }
-    
-    private func setupLayout() {
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-    
     private func setupCollectionView() {
         registerCollectionViewCells()
+    }
+    
+    //MARK: - private methods
+    
+    private func getLayoutType(for sectionIndex: Int) -> LayoutType? {
+        guard let sectionType = dataManager.getSectionType(at: sectionIndex) else {
+            return nil
+        }
+        
+        switch sectionType {
+        case .myAlbums:
+            return .columns
+        case .sharedAlbums:
+            return .plain
+        case .mediaTypes, .other:
+            return .tableStyle
+        }
     }
 }
 
@@ -153,62 +157,55 @@ extension AlbumsViewController: UICollectionViewDataSource {
     // Создает и настраивает ячейку для конкретной позиции
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let albumSection = dataManager.getSection(at: indexPath.section) else {
+        guard let item = dataManager.getSection(at: indexPath.section)?.items[indexPath.item] else {
             return UICollectionViewCell()
         }
         
-        let item = albumSection.items[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: item.cellIdentifier,
+            for: indexPath
+        )
         
-        switch item {
-        case .myAlbum(let myAlbum):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: MyAlbumsCell.identifier,
-                for: indexPath
-            ) as? MyAlbumsCell else {
-                return UICollectionViewCell()
-            }
+        configureCell(cell: cell, cellItem: item)
+        return cell
+    }
+    
+    private func configureCell(
+        cell: UICollectionViewCell,
+        cellItem: CellItemProtocol
+    ) {
+        switch cellItem.cellIdentifier {
+        case MyAlbumsCell.identifier:
+            guard let cell = cell as? MyAlbumsCell,
+                  let myAlbum = cellItem as? MyAlbum else { return }
+            
             cell.configuration(model: myAlbum)
-            return cell
             
-        case .firstSharedAlbum(let firstSharedAlbum):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: SharedAlbumsFirstCell.identifier,
-                for: indexPath
-            ) as? SharedAlbumsFirstCell else {
-                return UICollectionViewCell()
-            }
-            cell.configuration(model: firstSharedAlbum)
-            return cell
+        case SharedAlbumsFirstCell.identifier:
+            guard let cell = cell as? SharedAlbumsFirstCell,
+                  let firstShared = cellItem as? FirstSharedAlbum else { return }
             
-        case .sharedAlbum(let sharedAlbum):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: SharedAlbumsCell.identifier,
-                for: indexPath
-            ) as? SharedAlbumsCell else {
-                return UICollectionViewCell()
-            }
-            cell.configuration(model: sharedAlbum)
-            return cell
+            cell.configuration(model: firstShared)
             
-        case .mediaType(let mediaType):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: MediaTypesCell.identifier,
-                for: indexPath
-            ) as? MediaTypesCell else {
-                return UICollectionViewCell()
-            }
-            cell.configuration(model: mediaType)
-            return cell
+        case SharedAlbumsCell.identifier:
+            guard let cell = cell as? SharedAlbumsCell,
+                  let shared = cellItem as? SharedAlbum else { return }
             
-        case .other(let otherType):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: OtherAlbumsCell.identifier,
-                for: indexPath
-            ) as? OtherAlbumsCell else {
-                return UICollectionViewCell()
-            }
-            cell.configuration(model: otherType)
-            return cell
+            cell.configuration(model: shared)
+            
+        case MediaTypesCell.identifier:
+            guard let cell = cell as? MediaTypesCell,
+                  let media = cellItem as? MediaAndOther else { return }
+            
+            cell.configuration(model: media)
+            
+        case OtherAlbumsCell.identifier:
+            guard let cell = cell as? OtherAlbumsCell,
+                  let media = cellItem as? MediaAndOther else { return }
+            
+            cell.configuration(model: media)
+        default:
+            break
         }
     }
     
@@ -219,6 +216,10 @@ extension AlbumsViewController: UICollectionViewDataSource {
         at indexPath: IndexPath
     ) -> UICollectionReusableView {
         
+        guard let albumSection = dataManager.getSection(at: indexPath.section) else {
+            return UICollectionReusableView()
+        }
+        
         guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: AlbumsHeaderView.identifier,
@@ -227,17 +228,30 @@ extension AlbumsViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        guard let albumSection = dataManager.getSection(at: indexPath.section) else {
-            return UICollectionReusableView()
-        }
-        
         header.configure(
             title: albumSection.header.title,
             buttonTitle: albumSection.header.buttonTitle,
-            buttonAction: albumSection.header.buttonAction
+            buttonAction: { [weak self] in
+                self?.handleHeaderButtonTap(for: indexPath.section)
+            }
         )
         
         return header
+    }
+    
+    private func handleHeaderButtonTap(for sectionIndex: Int) {
+        guard let sectionType = dataManager.getSectionType(
+            at: sectionIndex
+        ) else { return }
+        
+        switch sectionType {
+        case .myAlbums:
+            print("See All tapped for My Albums")
+        case .sharedAlbums:
+            print("See All tapped for Shared Albums")
+        case .mediaTypes, .other:
+            print("Button tapped for section: \(sectionType.rawValue)")
+        }
     }
 }
 
