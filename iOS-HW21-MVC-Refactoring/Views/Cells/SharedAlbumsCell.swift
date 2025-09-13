@@ -11,7 +11,7 @@ final class SharedAlbumsCell: UICollectionViewCell {
     
     // MARK: - Properties
     
-    static let identifier = "SharedAlbums"
+    static let identifier = "SharedAlbumsCell"
     
     // MARK: - UI Elements
     private lazy var imageView = makeImageView()

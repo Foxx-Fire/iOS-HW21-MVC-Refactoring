@@ -9,7 +9,7 @@ import UIKit
 
 final class MediaTypesCell: UICollectionViewCell {
     
-    static let identifier = "MediaTypes"
+    static let identifier = "MediaTypesCell"
     
     // MARK: - UI Elements
     
