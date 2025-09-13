@@ -7,17 +7,24 @@
 
 import UIKit
 
+enum LayoutType {
+    case columns
+    case plain
+    case tableStyle
+}
+
 final class AlbumCompositionalLayout {
     
-    func createLayout() -> UICollectionViewCompositionalLayout {
+    func createLayout(
+        getLayoutType: @escaping (Int) -> LayoutType?
+    ) -> UICollectionViewCompositionalLayout {
+        
         let layout = UICollectionViewCompositionalLayout {
             [weak self] sectionIndex, environment in
-            self?.createSection(for: sectionIndex, environment: environment)
+            let layoutType = getLayoutType(sectionIndex)
+            return self?.createSection(for: layoutType, environment: environment)
         }
         
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.interSectionSpacing = 0
-        layout.configuration = config
         layout.register(
             SectionSeparatorView.self,
             forDecorationViewOfKind: SectionSeparatorView.identifier
@@ -26,22 +33,20 @@ final class AlbumCompositionalLayout {
         return layout
     }
     
-    private func createSection(for sectionIndex: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
-        guard sectionIndex < AlbumSection.allSections.count else {
-            fatalError("Неизвестная секция: индекс \(sectionIndex) выходит за пределы")
-        }
+    private func createSection(
+        for layoutType: LayoutType?,
+        environment: NSCollectionLayoutEnvironment
+    ) -> NSCollectionLayoutSection? {
         
-        let sectionType = AlbumSection.allSections[sectionIndex].type
+        guard let layoutType else { return nil }
         
-        switch sectionType {
-        case .myAlbums:
+        switch layoutType {
+        case .columns:
             return createMyAlbumsSection(environment: environment)
-        case .sharedAlbums:
+        case .plain:
             return createSharedAlbumsSection(environment: environment)
-        case .mediaTypes:
+        case .tableStyle:
             return createMediaTypesSection(environment: environment)
-        case .other:
-            return createOtherAlbumsSection(environment: environment)
         }
     }
     
