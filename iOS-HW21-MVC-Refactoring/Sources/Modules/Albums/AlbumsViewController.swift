@@ -7,24 +7,24 @@
 
 import UIKit
 
-final class AlbumsViewController: BaseViewController{
+final class AlbumsViewController: BaseViewController {
     
     // MARK: - Properties
     
-    private let layout: AlbumCompositionalLayout
-    private let dataManager: AlbumsDataProtocol
+    private let dataService: AlbumsDataServiceProtocol
     
     private lazy var albumsView: AlbumsView = {
-        let compositionalLayout = layout.createLayout { [weak self] sectionIndex in
+        let view = AlbumsView { [weak self] sectionIndex in
             return self?.getLayoutType(for: sectionIndex)
         }
-        return AlbumsView(layout: compositionalLayout)
+        view.setupDataSource(dataSource: self)
+        view.setupDelegate(delegate: self)
+        return view
     }()
     
     //MARK: - Init
-    init(dataManager: AlbumsDataProtocol = AlbumsDataManager()) {
-        self.dataManager = dataManager
-        self.layout = AlbumCompositionalLayout()
+    init(dataService: AlbumsDataServiceProtocol) {
+        self.dataService = dataService
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -43,46 +43,8 @@ final class AlbumsViewController: BaseViewController{
         super.viewDidLoad()
         
         setupNavigation()
-        setupDelegates()
-        registerCollectionViewCells()
     }
     
-    // MARK: - Registration
-    
-    private func registerCollectionViewCells() {
-        albumsView.collectionView.register(
-            MyAlbumsCell.self,
-            forCellWithReuseIdentifier: MyAlbumsCell.identifier
-        )
-        albumsView.collectionView.register(
-            AlbumsHeaderView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: AlbumsHeaderView.identifier
-        )
-        albumsView.collectionView.register(
-            SharedAlbumsFirstCell.self,
-            forCellWithReuseIdentifier: SharedAlbumsFirstCell.identifier
-        )
-        albumsView.collectionView.register(
-            SharedAlbumsCell.self,
-            forCellWithReuseIdentifier: SharedAlbumsCell.identifier
-        )
-        albumsView.collectionView.register(
-            MediaTypesCell.self,
-            forCellWithReuseIdentifier: MediaTypesCell.identifier
-        )
-        albumsView.collectionView.register(
-            OtherAlbumsCell.self,
-            forCellWithReuseIdentifier: OtherAlbumsCell.identifier
-        )
-    }
-    
-    // MARK: - Setup
-    
-    private func setupDelegates() {
-        albumsView.collectionView.dataSource = self
-        albumsView.collectionView.delegate = self
-    }
     func setupNavigation() {
         let addAction = UIAction { _ in
             print("Add button tapped in Albums")
@@ -96,14 +58,25 @@ final class AlbumsViewController: BaseViewController{
         )
     }
     
-    private func setupCollectionView() {
-        registerCollectionViewCells()
-    }
-    
     //MARK: - private methods
+    /*
+     Не переносите getLayoutType во View! Он должен остаться в контроллере, потому что:
+     
+     ✅ Использует dataService (логика данных)
+     
+     ✅ Принимает решения на основе данных
+     
+     ✅ Относится к бизнес-логике
+     
+     ✅ Не имеет отношения к отрисовке
+     
+     Текущая архитектура правильная!
+     
+     AI тоже против как и я
+     */
     
-    private func getLayoutType(for sectionIndex: Int) -> LayoutType? {
-        guard let sectionType = dataManager.getSectionType(at: sectionIndex) else {
+    private func getLayoutType(for sectionIndex: Int) -> AlbumCompositionalLayout.LayoutType? {
+        guard let sectionType = dataService.getSectionType(at: sectionIndex) else {
             return nil
         }
         
@@ -144,20 +117,20 @@ extension AlbumsViewController: UICollectionViewDelegate {
 extension AlbumsViewController: UICollectionViewDataSource {
     // Определяет количество секций в коллекции
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return dataManager.getSections().count
+        return dataService.getAllSections().count
     }
     
     // Определяет количество ячеек в конкретной секции
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        guard let albumSection = dataManager.getSection(at: section) else { return 0 }
+        guard let albumSection = dataService.getSection(at: section) else { return 0 }
         return albumSection.items.count
     }
     
     // Создает и настраивает ячейку для конкретной позиции
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let item = dataManager.getSection(at: indexPath.section)?.items[indexPath.item] else {
+        guard let item = dataService.getSection(at: indexPath.section)?.items[indexPath.item] else {
             return UICollectionViewCell()
         }
         
@@ -216,7 +189,7 @@ extension AlbumsViewController: UICollectionViewDataSource {
         at indexPath: IndexPath
     ) -> UICollectionReusableView {
         
-        guard let albumSection = dataManager.getSection(at: indexPath.section) else {
+        guard let albumSection = dataService.getSection(at: indexPath.section) else {
             return UICollectionReusableView()
         }
         
@@ -240,7 +213,7 @@ extension AlbumsViewController: UICollectionViewDataSource {
     }
     
     private func handleHeaderButtonTap(for sectionIndex: Int) {
-        guard let sectionType = dataManager.getSectionType(
+        guard let sectionType = dataService.getSectionType(
             at: sectionIndex
         ) else { return }
         

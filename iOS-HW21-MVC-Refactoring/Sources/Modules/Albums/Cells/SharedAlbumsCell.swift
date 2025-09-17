@@ -16,7 +16,7 @@ final class SharedAlbumsCell: UICollectionViewCell {
     // MARK: - UI Elements
     private lazy var imageView = makeImageView()
     private lazy var descriptionLabel = makeDescriptionLabel()
-    private lazy var subtitle = makesubtitleLabel()
+    private lazy var subtitle = makeSubtitleLabel()
     private lazy var stackView = makeStackView()
     
     // MARK: - Initialization
@@ -78,7 +78,7 @@ final class SharedAlbumsCell: UICollectionViewCell {
         return label
     }
     
-    private func makesubtitleLabel() -> UILabel {
+    private func makeSubtitleLabel() -> UILabel {
         let label = UILabel()
         label.font = Constants.descriptionFont
         label.textColor = Constants.descriptionColor
@@ -115,10 +115,7 @@ final class SharedAlbumsCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        resetContent()
-    }
-    
-    private func resetContent() {
+        
         imageView.image = nil
         descriptionLabel.text = nil
     }

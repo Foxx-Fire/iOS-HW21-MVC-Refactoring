@@ -47,19 +47,19 @@ final class MediaTypesCell: UICollectionViewCell {
             iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             iconImageView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
             iconImageView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
-        
+            
             titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: Constants.textSpacing),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-        
+            
             chevronImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
             chevronImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             chevronImageView.widthAnchor.constraint(equalToConstant: Constants.chevronSize),
             chevronImageView.heightAnchor.constraint(equalToConstant: Constants.chevronSize),
             
-        
+            
             countLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -Constants.textSpacing),
             countLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-        
+            
             separatorView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
             separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),

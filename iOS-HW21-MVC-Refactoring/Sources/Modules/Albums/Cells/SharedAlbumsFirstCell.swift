@@ -19,7 +19,7 @@ final class SharedAlbumsFirstCell: UICollectionViewCell {
     
     private lazy var circleContainer = makeCircleContainer()
     private lazy var descriptionLabel = makeDescriptionLabel()
-    private lazy var subtitle = makesubtitleLabel()
+    private lazy var subtitle = makeSubtitleLabel()
     private lazy var stackView = makeStackView()
     
     // MARK: - Initialization
@@ -158,7 +158,7 @@ final class SharedAlbumsFirstCell: UICollectionViewCell {
         return imageView
     }
     
-    private func makesubtitleLabel() -> UILabel {
+    private func makeSubtitleLabel() -> UILabel {
         let label = UILabel()
         label.font = Constants.descriptionFont
         label.textColor = Constants.descriptionColor

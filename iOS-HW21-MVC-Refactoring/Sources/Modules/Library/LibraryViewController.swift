@@ -1,5 +1,5 @@
 //
-//  ForYouViewController.swift
+//  Untitled.swift
 //  iOS-HW21-MVC-Refactoring
 //
 //  Created by FoxxFire on 12.09.2025.
@@ -7,18 +7,23 @@
 
 import UIKit
 
-final class ForYouViewController: BaseViewController {
+final class LibraryViewController: BaseViewController {
+    
+    private let libraryView = LibraryView()
     
     // MARK: - Lifecycle
     
+    override func loadView() {
+        view = libraryView
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.backgroundColor
         
         setupNavigation()
     }
     
-    // MARK: - Setup Methods
+    // MARK: - Setups
     
     func setupNavigation() {
         configureNavigation(title: Constants.Navigation.title)
@@ -27,12 +32,10 @@ final class ForYouViewController: BaseViewController {
 
 // MARK: - Constants
 
-extension ForYouViewController {
+extension LibraryViewController {
     enum Constants {
-        static let backgroundColor: UIColor = .red
-        
         enum Navigation {
-            static let title = "For You"
+            static let title = "Library"
         }
     }
 }

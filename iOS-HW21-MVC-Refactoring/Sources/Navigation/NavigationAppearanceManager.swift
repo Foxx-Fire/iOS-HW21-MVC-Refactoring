@@ -37,8 +37,7 @@ private extension NavigationAppearanceManager {
         static let titleFont = UIFont.systemFont(ofSize: 34, weight: .bold)
         static let containerMargins = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0)
         static let containerTopInset: CGFloat = 10
-        static let minContainerWidth: CGFloat = 300
-        
+        static let minContainerWidth: CGFloat = 300 
         static let titleTopOffset: CGFloat = 34
         static let titleButtonSpacing: CGFloat = 4
         static let buttonSize = CGSize(width: 30, height: 30)

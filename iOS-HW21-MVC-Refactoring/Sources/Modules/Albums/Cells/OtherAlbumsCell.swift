@@ -63,7 +63,7 @@ final class OtherAlbumsCell: UICollectionViewCell {
             separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
             separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: Constants.separatorHeight)
-            ])
+        ])
     }
     
     //MARK: - UIMethods

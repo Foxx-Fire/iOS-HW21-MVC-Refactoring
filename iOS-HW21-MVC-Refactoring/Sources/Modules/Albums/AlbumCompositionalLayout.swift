@@ -7,12 +7,6 @@
 
 import UIKit
 
-enum LayoutType {
-    case columns
-    case plain
-    case tableStyle
-}
-
 final class AlbumCompositionalLayout {
     
     func createLayout(
@@ -38,8 +32,6 @@ final class AlbumCompositionalLayout {
         environment: NSCollectionLayoutEnvironment
     ) -> NSCollectionLayoutSection? {
         
-        guard let layoutType else { return nil }
-        
         switch layoutType {
         case .columns:
             return createMyAlbumsSection(environment: environment)
@@ -47,10 +39,14 @@ final class AlbumCompositionalLayout {
             return createSharedAlbumsSection(environment: environment)
         case .tableStyle:
             return createMediaTypesSection(environment: environment)
+        case .none:
+            return nil
         }
     }
     
-    private func createMyAlbumsSection(environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+    private func createMyAlbumsSection(
+        environment: NSCollectionLayoutEnvironment
+    ) -> NSCollectionLayoutSection {
         let contentWidth = environment.container.effectiveContentSize.width - Constants.sidePadding * 2
         let columnWidth = (contentWidth - Constants.interColumnSpacing) / 2
         let itemHeight = calculateMyAlbumsItemHeight(columnWidth: columnWidth)
@@ -259,5 +255,13 @@ private extension AlbumCompositionalLayout {
         Constants.sharedAlbumsStackSpacing +
         titleLineHeight * 2
         return groupWidth + labelExtra
+    }
+}
+
+extension AlbumCompositionalLayout {
+    enum LayoutType {
+        case columns
+        case plain
+        case tableStyle
     }
 }

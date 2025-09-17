@@ -28,7 +28,7 @@ final class TabBarController: TabBarNavigationProtocol {
                 customIcon: nil
             ),
             createController(
-                rootViewController: AlbumsViewController(),
+                rootViewController: albumsController(),
                 title: "Albums",
                 systemIcon: "rectangle.stack.fill", // Замена отсутствующей "albums"
                 customIcon: nil
@@ -40,6 +40,12 @@ final class TabBarController: TabBarNavigationProtocol {
                 customIcon: nil
             )
         ]
+    }
+    
+    private func albumsController() -> UIViewController {
+        AlbumsViewController(
+            dataService: AlbumsDataService()
+        )
     }
     
     private func createController(rootViewController: UIViewController,
