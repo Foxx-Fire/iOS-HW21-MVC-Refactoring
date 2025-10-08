@@ -227,8 +227,3 @@ extension AlbumsViewController: UICollectionViewDataSource {
         }
     }
 }
-
-
-
-
-
