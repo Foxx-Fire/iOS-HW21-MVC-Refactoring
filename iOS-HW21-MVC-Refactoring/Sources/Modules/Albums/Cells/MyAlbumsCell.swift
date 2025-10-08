@@ -11,6 +11,15 @@ final class MyAlbumsCell: UICollectionViewCell {
     
     static let identifier = "MyAlbumsCell"
     
+    // NumberFormatter
+    
+    private static let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = " "
+        return formatter
+    }()
+    
     // MARK: - UI Elements
     
     private lazy var imageView = makeImageView()
@@ -94,11 +103,9 @@ final class MyAlbumsCell: UICollectionViewCell {
         imageView.image = UIImage(named: model.imageName)
         descriptionLabel.text = model.title
         
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        countLabel.text = formatter.string(
+        countLabel.text = Self.numberFormatter.string(
             from: NSNumber(value: model.count)
-        ) ?? "\(model.count)"
+        )
         
         if let image = UIImage(named: model.imageName) {
             imageView.image = image
