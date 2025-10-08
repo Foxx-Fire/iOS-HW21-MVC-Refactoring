@@ -7,6 +7,18 @@
 
 import UIKit
 
+// MARK: - Constants
+extension AlbumsViewController {
+    enum Constants {
+        enum Navigation {
+            static let title = "Albums"
+            static let buttonImageName = "plus"
+        }
+        
+        static let backgroundColor: UIColor = .white
+    }
+}
+
 final class AlbumsViewController: BaseViewController {
     
     // MARK: - Properties
@@ -88,18 +100,6 @@ final class AlbumsViewController: BaseViewController {
         case .mediaTypes, .other:
             return .tableStyle
         }
-    }
-}
-
-// MARK: - Constants
-extension AlbumsViewController {
-    enum Constants {
-        enum Navigation {
-            static let title = "Albums"
-            static let buttonImageName = "plus"
-        }
-        
-        static let backgroundColor: UIColor = .white
     }
 }
 
