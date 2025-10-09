@@ -94,6 +94,7 @@ final class MyAlbumsCell: UICollectionViewCell {
         stack.axis = .vertical
         stack.spacing = Constants.stackSpacing
         stack.alignment = .leading
+        stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }
     
